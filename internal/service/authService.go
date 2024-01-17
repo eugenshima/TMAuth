@@ -23,9 +23,8 @@ type AuthRepositoryInterface interface {
 }
 
 // GetProfileByLogin function returns the profile associated with the given login
-func (s *AuthService) GetProfileByLogin(ctx context.Context) (*model.FullAuthModel, error) {
-	str := "jija"
-	auth, err := s.rps.GetProfileByLogin(ctx, str)
+func (s *AuthService) GetProfileByLogin(ctx context.Context, login string) (*model.FullAuthModel, error) {
+	auth, err := s.rps.GetProfileByLogin(ctx, login)
 	if err != nil {
 		return nil, fmt.Errorf("GetProfileByLogin: %w", err)
 	}

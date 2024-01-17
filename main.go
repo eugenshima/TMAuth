@@ -49,7 +49,6 @@ func main() {
 	rps := repository.NewProfileRepository(pool)
 	srv := service.NewAuthService(rps)
 	hnd := handlers.NewAuthHandler(srv)
-	srv.GetProfileByLogin(context.Background())
 
 	lis, err := net.Listen("tcp", "127.0.0.1:8080")
 	if err != nil {
