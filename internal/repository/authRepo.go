@@ -20,6 +20,7 @@ func NewProfileRepository(pool *pgxpool.Pool) *ProfileRepository {
 	return &ProfileRepository{pool: pool}
 }
 
+// GetProfileByLogin returns a Profile object from database
 func (db *ProfileRepository) GetProfileByLogin(ctx context.Context, login string) (*model.FullAuthModel, error) {
 	profile := &model.FullAuthModel{}
 	err := db.pool.QueryRow(context.Background(), "select id, login, password from profile.profile WHERE login = $1", login).Scan(&profile.ID, &profile.Login, &profile.Password)

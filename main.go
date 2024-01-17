@@ -3,13 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
+	"net"
 
 	cfgrtn "github.com/eugenshima/TMAuth/internal/config"
+	"github.com/eugenshima/TMAuth/internal/handlers"
 	"github.com/eugenshima/TMAuth/internal/repository"
 	"github.com/eugenshima/TMAuth/internal/service"
+	proto "github.com/eugenshima/TMAuth/proto"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
 )
 
 // NewDBPsql function provides Connection with PostgreSQL database
@@ -43,6 +47,21 @@ func main() {
 	}
 
 	rps := repository.NewProfileRepository(pool)
-	srv := service.NewProfileServiceService(rps)
+	srv := service.NewAuthService(rps)
+	hnd := handlers.NewAuthHandler(srv)
 	srv.GetProfileByLogin(context.Background())
+
+	lis, err := net.Listen("tcp", "127.0.0.1:8080")
+	if err != nil {
+		logrus.Fatalf("cannot create listener: %s", err)
+	}
+
+	serverRegistrar := grpc.NewServer()
+	proto.RegisterAuthServer(serverRegistrar, hnd)
+	//proto.RegisterProfilesServer(serverRegistrar, hnd)
+	err = serverRegistrar.Serve(lis)
+	if err != nil {
+		logrus.Fatalf("cannot start server: %s", err)
+	}
+
 }

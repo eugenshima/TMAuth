@@ -7,24 +7,28 @@ import (
 	"github.com/eugenshima/TMAuth/internal/model"
 )
 
-type ProfileServiceService struct {
-	rps ProfileRepositoryInterface
+// AuthService represents authentication
+type AuthService struct {
+	rps AuthRepositoryInterface
 }
 
-func NewProfileServiceService(rps ProfileRepositoryInterface) *ProfileServiceService {
-	return &ProfileServiceService{rps: rps}
+// NewAuthService creates a new AuthService
+func NewAuthService(rps AuthRepositoryInterface) *AuthService {
+	return &AuthService{rps: rps}
 }
 
-type ProfileRepositoryInterface interface {
+// AuthRepositoryInterface represents a repository interface
+type AuthRepositoryInterface interface {
 	GetProfileByLogin(context.Context, string) (*model.FullAuthModel, error)
 }
 
-func (s *ProfileServiceService) GetProfileByLogin(ctx context.Context) error {
+// GetProfileByLogin function returns the profile associated with the given login
+func (s *AuthService) GetProfileByLogin(ctx context.Context) (*model.FullAuthModel, error) {
 	str := "jija"
 	auth, err := s.rps.GetProfileByLogin(ctx, str)
 	if err != nil {
-		return fmt.Errorf("GetProfileByLogin: %w", err)
+		return nil, fmt.Errorf("GetProfileByLogin: %w", err)
 	}
 	fmt.Println(auth, auth.Login)
-	return nil
+	return auth, nil
 }

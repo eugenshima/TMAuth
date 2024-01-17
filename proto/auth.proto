@@ -1,0 +1,18 @@
+syntax = "proto3";
+option go_package = "github.com/eugenshima/TMAuth";
+
+message AuthModel {
+    string Login = 1;
+    string Password = 2;
+}
+message LoginRequest {
+    AuthModel auth = 1;
+}
+
+message LoginResponse {
+    string Login = 1;
+}
+
+service Auth {
+    rpc Login(LoginRequest) returns (LoginResponse);
+}
